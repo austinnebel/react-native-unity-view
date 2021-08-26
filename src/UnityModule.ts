@@ -432,7 +432,7 @@ class UnityModuleImpl implements UnityModule {
                 }
             } else {
                 if (__DEBUG_UNITY_VIEW__) {
-                    if (unityMessage.isRequest) {
+                    if (unityMessage.isRequest()) {
                         console.log("INCOMMING REQUEST" + message.substr(UnityMessagePrefix.length));
                     } else {
                         console.log("GENERAL" + message.substr(UnityMessagePrefix.length));
