@@ -1,10 +1,11 @@
 import { NativeModules } from 'react-native';
-import { UnityMessage, UnityMessagePrefix, UnityMessageImpl, UnityMessageType } from './UnityMessage'
+import { UnityMessage, UnityMessagePrefix, UnityMessageImpl, UnityMessageType } from './UnityMessage';
+import { IUnityRequest } from './UnityRequest';
 const { UnityNativeModule } = NativeModules;
 
 type OnCancelCallback = (handler: UnityRequestHandler) => void;
 
-export interface UnityRequestHandler<TRequest extends IUnityRequest<any, any, TResponse>, TResponse = any> {
+export interface UnityRequestHandler<TRequest extends IUnityRequest<any, any, TResponse> = IUnityRequest, TResponse = any> {
     readonly isCanceled: boolean;
     readonly message: TRequest;
     sendResponse(data: TResponse): void;
