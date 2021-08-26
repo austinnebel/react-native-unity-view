@@ -439,7 +439,7 @@ class UnityModuleImpl implements UnityModule {
                     }
                 }
 
-                if (unityMessage.isRequest) {
+                if (unityMessage.isRequest()) {
                     if (Object.keys(this.unityRequestListeners).length > 0) {
                         const handler = new UnityRequestHandlerImpl(
                             unityMessage as UnityMessageImpl,
