@@ -3,7 +3,7 @@ import { IUnityMessage, UnityMessageType } from "./UnityMessage";
 export interface IUnityRequest<TType extends number = UnityMessageType, TData = any, TResponse = any> extends IUnityMessage<TType, TData> {
 }
 
-export class UnityRequest<TType extends number = UnityMessageType, TData = any, TResponse = any> implements IUnityRequest<TType, TData, TResponse> {
+export class UnityRequest<TType extends number = number, TData = any, TResponse = any> implements IUnityRequest<TType, TData, TResponse> {
     private m_id: string;
     private m_type: TType;
     private m_data?: TData;
