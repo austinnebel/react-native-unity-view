@@ -3,20 +3,20 @@ import { UnityMessage, UnityMessagePrefix, UnityMessageImpl, UnityMessageType } 
 import { IUnityRequest } from './UnityRequest';
 const { UnityNativeModule } = NativeModules;
 
-type OnCancelCallback = (handler: UnityRequestHandler) => void;
+type OnCancelCallback<TRequest extends IUnityRequest = IUnityRequest> = (handler: UnityRequestHandler<TRequest>) => void;
 
-export interface UnityRequestHandler<TRequest extends IUnityRequest<any, any, TResponse> = IUnityRequest, TResponse = any> {
+export interface UnityRequestHandler<TRequest extends IUnityRequest = IUnityRequest> {
     readonly isCanceled: boolean;
     readonly message: TRequest;
-    sendResponse(data: TResponse): void;
+    sendResponse(data: TRequest ["_"]): void;
     sendError(error: any): void;
-    onCancel(callback: OnCancelCallback);
+    onCancel(callback: OnCancelCallback<TRequest>);
 }
 
-export class UnityRequestHandlerImpl implements UnityRequestHandler {
+export class UnityRequestHandlerImpl<TRequest extends IUnityRequest = IUnityRequest> implements UnityRequestHandler<TRequest> {
     private m_responseSent: boolean;
     private m_isCanceled: boolean;
-    private m_onCancel: OnCancelCallback[];
+    private m_onCancel: OnCancelCallback<TRequest>[];
     private m_onClose: (uuid: number) => void;
 
     constructor(message: UnityMessageImpl, onClose: (uuid: number) => void) {
@@ -24,7 +24,7 @@ export class UnityRequestHandlerImpl implements UnityRequestHandler {
             throw new Error(`Cannot create instance of UnityRequestHandler. Provided message is not a request type.`)
         }
 
-        this.message = message;
+        this.message = message as any;
         this.m_onCancel = [];
         this.m_onClose = onClose;
     }
@@ -33,9 +33,9 @@ export class UnityRequestHandlerImpl implements UnityRequestHandler {
         return this.m_isCanceled;
     }
 
-    public message: UnityMessage;
+    public message: TRequest;
 
-    public sendResponse(data?: any): void {
+    public sendResponse(data?: TRequest ["_"]): void {
         this.m_responseSent = true;
         UnityNativeModule.postMessage(
             'UnityMessageManager', 'onRNMessage', UnityMessagePrefix + JSON.stringify({
@@ -76,7 +76,7 @@ export class UnityRequestHandlerImpl implements UnityRequestHandler {
         }
     }
 
-    public onCancel(callback: OnCancelCallback) {
+    public onCancel(callback: OnCancelCallback<TRequest>) {
         if (typeof callback !== "function") {
             throw new Error("Cancellation callback is not a function!");
         }
