@@ -1,7 +1,6 @@
 import { IUnityMessage, UnityMessageType } from "./UnityMessage";
 
 export interface IUnityRequest<TType extends number = UnityMessageType, TData = any, TResponse = any> extends IUnityMessage<TType, TData> {
-    processResponse(response: TResponse): TResponse;
 }
 
 export class UnityRequest<TType extends number = UnityMessageType, TData = any, TResponse = any> implements IUnityRequest<TType, TData, TResponse> {
@@ -36,9 +35,5 @@ export class UnityRequest<TType extends number = UnityMessageType, TData = any, 
     }
     public get data(): TData {
         return this.m_data;
-    }
-
-    public processResponse(response: TResponse): TResponse {
-        return response;
     }
 }

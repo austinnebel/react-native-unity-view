@@ -4,10 +4,10 @@ const { UnityNativeModule } = NativeModules;
 
 type OnCancelCallback = (handler: UnityRequestHandler) => void;
 
-export interface UnityRequestHandler {
+export interface UnityRequestHandler<TRequest = IUnityRequest<TType, TData, TResponse>> {
     readonly isCanceled: boolean;
-    readonly message: UnityMessage;
-    sendResponse(data: any): void;
+    readonly message: TRequest;
+    sendResponse(data: TResponse): void;
     sendError(error: any): void;
     onCancel(callback: OnCancelCallback);
 }
