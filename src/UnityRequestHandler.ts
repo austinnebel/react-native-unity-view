@@ -76,7 +76,7 @@ export class UnityRequestHandlerImpl implements UnityRequestHandler {
     }
 
     public onCancel(callback: OnCancelCallback) {
-        if (typeof callback === "function") {
+        if (typeof callback !== "function") {
             throw new Error("Cancellation callback is not a function!");
         }
 
