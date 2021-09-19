@@ -8,9 +8,11 @@ import UnityEventEmitter from './UnityEventEmitter';
 const { UnityNativeModule } = NativeModules;
 
 declare const __DEBUG_UNITY_VIEW__: boolean;
+declare const nativePerformanceNow: () => number;
 
 interface ResponseCallback {
     id: string;
+    startedAt: number,
     onNext: (response: UnityMessage) => void;
     onError: (reason?: UnityMessage) => void;
     onCanceled: () => void;
@@ -260,15 +262,12 @@ class UnityModuleImpl implements UnityModule {
         return new Observable<TResponse>((subscriber: Subscriber<TResponse>): TeardownLogic => {
             let isCompleted: boolean = false;
             const uuid = generateUuid();
+
             responseCallbackMessageMap[uuid] = {
                 id: id,
+                startedAt: nativePerformanceNow(),
                 onNext: (response: UnityMessage) => {
                     const data = response.data as TResponse;
-
-                    if(__DEBUG_UNITY_VIEW__) {
-                        console.log(`RESPONSE ${uuid}: ${JSON.stringify(data)}`);
-                    }
-
                     subscriber.next(data);
                 },
                 onError: (response: UnityMessage) => {
@@ -395,7 +394,8 @@ class UnityModuleImpl implements UnityModule {
                     removeResponseCallback(unityMessage.uuid);
                     if (unityMessage.isResponse()) {
                         if (__DEBUG_UNITY_VIEW__) {
-                            console.log(`RESPONSE ${unityMessage.uuid}` + message.substr(UnityMessagePrefix.length));
+                            const time = Math.round(nativePerformanceNow() - awaitEntry.startedAt);
+                            console.log(`RESPONSE ${unityMessage.uuid} (${time}ms): ` + message.substr(UnityMessagePrefix.length));
                         }
                         if (awaitEntry.onNext) {
                             awaitEntry.onNext(unityMessage);
