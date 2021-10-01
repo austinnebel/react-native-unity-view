@@ -235,6 +235,8 @@ public static class Build
         var prevCompilerConfiguration = PlayerSettings.GetIl2CppCompilerConfiguration(BuildTargetGroup.iOS);
         var prevScriptingDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS);
         var prev_sdkVersion = PlayerSettings.iOS.sdkVersion;
+        var prev_provisioningProfileId = PlayerSettings.iOS.iOSManualProvisioningProfileID;
+        var prev_provisioningProfileType = PlayerSettings.iOS.iOSManualProvisioningProfileType;
         var isDebug = !(buildType == iOSBuildType.Debug);
         var disabledARKit = false;
 
@@ -244,6 +246,12 @@ public static class Build
 
             PlayerSettings.iOS.sdkVersion = prev_sdkVersion;
             PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.iOS, prevCompilerConfiguration);
+
+            if (isDebug || sdkVersion == iOSSdkVersion.SimulatorSDK)
+            {
+                PlayerSettings.iOS.iOSManualProvisioningProfileID = prev_provisioningProfileId;
+                PlayerSettings.iOS.iOSManualProvisioningProfileType = prev_provisioningProfileType;
+            }
 
             if (!Application.isBatchMode)
             {
@@ -263,6 +271,12 @@ public static class Build
         PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.iOS, compilerConfiguration);
         PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, ProcessDefines(prevScriptingDefines, isDebug));
         PlayerSettings.iOS.sdkVersion = sdkVersion;
+
+        if (isDebug || sdkVersion == iOSSdkVersion.SimulatorSDK)
+        {
+            PlayerSettings.iOS.iOSManualProvisioningProfileID = String.Empty;
+            PlayerSettings.iOS.iOSManualProvisioningProfileType = ProvisioningProfileType.Automatic;
+        }
 
         if (sdkVersion == iOSSdkVersion.SimulatorSDK
             && xrGeneralSettings.AssignedSettings.activeLoaders.Any(m => m.GetType() == typeof(UnityEngine.XR.ARKit.ARKitLoader)))
