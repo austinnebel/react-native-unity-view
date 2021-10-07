@@ -10,11 +10,13 @@ namespace ReactNative
     {
         private sealed class UnityMessageHandlerImpl : IUnityMessageHandler, IDisposable
         {
+            private readonly string raw;
             private IDisposable deferral;
             private CancellationTokenSource cts;
 
-            public UnityMessageHandlerImpl(UnityMessage message)
+            public UnityMessageHandlerImpl(UnityMessage message, string raw)
             {
+                this.raw = raw;
                 this.Message = message;
             }
 
@@ -76,6 +78,14 @@ namespace ReactNative
                 if (this.IsRequest)
                 {
                     this.ResponseSent = true;
+
+                    if (string.IsNullOrEmpty(error.rawInput))
+                    {
+                        error.rawInput = this.raw;
+                    }
+
+                    Debug.LogError(error);
+
                     UnityMessageManager.SendError(
                         this.Message.id,
                         this.Message.uuid.Value,
@@ -96,6 +106,7 @@ namespace ReactNative
                 this.SendError(
                     new UnityRequestException(
                         error,
+                        raw,
                         memberName,
                         sourceFilePath,
                         sourceLineNumber));

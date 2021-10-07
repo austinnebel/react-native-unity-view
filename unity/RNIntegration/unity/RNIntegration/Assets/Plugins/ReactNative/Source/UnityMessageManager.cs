@@ -372,7 +372,7 @@ namespace ReactNative
                 {
                     lock (this.stateLock)
                     {
-                        var args = new UnityMessageHandlerImpl(unityMessage);
+                        var args = new UnityMessageHandlerImpl(unityMessage, message);
 
                         try
                         {
