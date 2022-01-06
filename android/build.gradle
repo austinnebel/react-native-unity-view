@@ -33,6 +33,8 @@ android {
 }
 
 dependencies {
-    api project(':UnityExport')
-    api 'com.facebook.react:react-native:+'
+    api project(':unityLibrary')
+    api 'com.facebook.react:react-native:0.66.4'
+
+    implementation fileTree(dir: "${project(':unityLibrary').projectDir}/libs", include: ['*.jar'])
 }
