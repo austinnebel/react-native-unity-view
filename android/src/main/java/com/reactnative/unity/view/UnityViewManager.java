@@ -3,8 +3,11 @@ package com.reactnative.unity.view;
 import android.os.Handler;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -28,11 +31,13 @@ public class UnityViewManager extends SimpleViewManager<UnityView> implements Li
         context.addLifecycleEventListener(this);
     }
 
+    @NonNull
     @Override
     public String getName() {
         return REACT_CLASS;
     }
 
+    @NonNull
     @Override
     protected UnityView createViewInstance(ThemedReactContext reactContext) {
         final UnityView view = new UnityView(reactContext);
@@ -85,5 +90,16 @@ public class UnityViewManager extends SimpleViewManager<UnityView> implements Li
 
     @Override
     public void onViewDetachedFromWindow(View v) {
+    }
+
+    // Required for rn built in EventEmitter Calls.
+    @ReactMethod
+    public void addListener(String eventName) {
+
+    }
+
+    @ReactMethod
+    public void removeListeners(Integer count) {
+
     }
 }
