@@ -45,6 +45,7 @@ export default class UnityView extends React.Component<UnityViewProps> {
 
   public constructor(props: any) {
     super(props);
+
     this.m_registrationToken = UnityModule.addMessageListener(message => {
       if (message instanceof UnityMessageImpl) {
         if (this.props.onUnityMessage) {
@@ -104,6 +105,7 @@ export default class UnityView extends React.Component<UnityViewProps> {
     gameObject?: string,
     methodName?: string,
   ): Observable<TResponse>;
+
   public postMessageAsync<
     TResponse = any,
     TType extends number = UnityMessageType,
@@ -114,6 +116,7 @@ export default class UnityView extends React.Component<UnityViewProps> {
     gameObject?: string,
     methodName?: string,
   ): Observable<TResponse>;
+
   public postMessageAsync<
     TResponse = any,
     TType extends number = UnityMessageType,
@@ -125,6 +128,7 @@ export default class UnityView extends React.Component<UnityViewProps> {
     gameObject?: string,
     methodName?: string,
   ): Observable<TResponse>;
+
   public postMessageAsync<
     TResponse = any,
     TType extends number = UnityMessageType,

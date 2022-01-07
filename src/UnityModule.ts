@@ -1,4 +1,7 @@
 import {NativeModules} from 'react-native';
+import {Observable, Subscriber, TeardownLogic} from 'rxjs';
+import {IUnityRequest} from './UnityRequest';
+import UnityEventEmitter from './UnityEventEmitter';
 import {
   UnityMessage,
   UnityMessageImpl,
@@ -9,9 +12,6 @@ import {
   UnityRequestHandler,
   UnityRequestHandlerImpl,
 } from './UnityRequestHandler';
-import {Observable, Subscriber, TeardownLogic} from 'rxjs';
-import {IUnityRequest} from './UnityRequest';
-import UnityEventEmitter from './UnityEventEmitter';
 
 const {UnityNativeModule} = NativeModules;
 
@@ -46,14 +46,12 @@ const removeRequestCallback = function (uuid: number | string) {
 };
 
 export interface UnityModule {
-  /**
-   * Return whether is unity ready.
-   */
+  /** Return whether is unity ready. */
   isReady(): Promise<boolean>;
-  /**
-   * Manual init the Unity. Usually Unity is auto created when the first view is added.
-   */
+
+  /** Manually init the Unity. Usually Unity is auto created when the first view is added. */
   createUnity(): Promise<boolean>;
+
   /**
    * Send Message to Unity.
    * @param message The message to post.
@@ -65,6 +63,7 @@ export interface UnityModule {
     gameObject?: string,
     methodName?: string,
   ): void;
+
   /**
    * Send Message to UnityMessageManager.
    * @param request The request to post.
@@ -80,6 +79,7 @@ export interface UnityModule {
     gameObject?: string,
     methodName?: string,
   ): Observable<TResponse>;
+
   /**
    * Send Message to UnityMessageManager.
    * @param id The request target ID to post.
@@ -93,6 +93,7 @@ export interface UnityModule {
     gameObject?: string,
     methodName?: string,
   ): Observable<TResponse>;
+
   /**
    * Send Message to UnityMessageManager.
    * @param id The request target ID to post.
@@ -108,43 +109,35 @@ export interface UnityModule {
     gameObject?: string,
     methodName?: string,
   ): Observable<TResponse>;
-  /**
-   * Pause the unity player
-   */
+
+  /** Pause the unity player */
   pause(): void;
-  /**
-   * Pause the unity player
-   */
+
+  /** Pause the unity player */
   resume(): void;
-  /**
-   * Receive string and json message from unity.
-   */
+
+  /** Receive string and json message from unity.*/
   addMessageListener(
     listener: (
       messageOrHandler: string | UnityMessage | UnityRequestHandler,
     ) => void,
   ): number;
-  /**
-   * Only receive string message from unity.
-   */
+
+  /** Only receive string message from unity. */
   addStringMessageListener(listener: (message: string) => void): number;
-  /**
-   * Only receive json message from unity.
-   */
+
+  /** Only receive json message from unity. */
   addUnityMessageListener(listener: (message: UnityMessage) => void): number;
-  /**
-   * Only receive json request from unity.
-   */
+
+  /** Only receive json request from unity. */
   addUnityRequestListener(
     listener: (handler: UnityRequestHandler) => void,
   ): number;
-  /**
-   * Remove message listener.
-   */
+
+  /** Remove message listener. */
   removeMessageListener(handleId: number): void;
-  /**
-   * Clears pending requests before shutting down the module.
-   */
+
+  /** Clears pending requests before shutting down the module. */
   clear();
 }
 
@@ -154,6 +147,7 @@ function generateUuid() {
   return sequence;
 }
 
+/** Implementation of Unity Module. */
 class UnityModuleImpl implements UnityModule {
   private hid = 0;
   private stringListeners: {
@@ -170,6 +164,10 @@ class UnityModuleImpl implements UnityModule {
     this.createListeners();
   }
 
+  /**
+   * Creates 'onUnityMessage' event listener to await incoming
+   * messages from Unity.
+   */
   private createListeners() {
     this.stringListeners = {};
     this.unityMessageListeners = {};
@@ -199,10 +197,15 @@ class UnityModuleImpl implements UnityModule {
     return this.hid;
   }
 
+  /** Returns True if Unity is ready to be initialized.
+   *  Calls native isReady method.
+   */
   public async isReady() {
     return UnityNativeModule.isReady();
   }
-
+  /** Creates a Unity player object.
+   *  Calls native createUnity method.
+   */
   public async createUnity() {
     return UnityNativeModule.createUnity();
   }
@@ -258,6 +261,7 @@ class UnityModuleImpl implements UnityModule {
     gameObject?: string,
     methodName?: string,
   ): Observable<TResponse>;
+
   /**
    * Send Message to UnityMessageManager.
    * @param id The request target ID to post.
@@ -274,6 +278,7 @@ class UnityModuleImpl implements UnityModule {
     gameObject?: string,
     methodName?: string,
   ): Observable<TResponse>;
+
   /**
    * Send Message to UnityMessageManager.
    * @param id The request target ID to post.
@@ -292,6 +297,7 @@ class UnityModuleImpl implements UnityModule {
     gameObject?: string,
     methodName?: string,
   ): Observable<TResponse>;
+
   public postMessageAsync<
     TResponse = any,
     TType extends number = UnityMessageType,
