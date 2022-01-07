@@ -167,6 +167,7 @@ class UnityModuleImpl implements UnityModule {
   /**
    * Creates 'onUnityMessage' event listener to await incoming
    * messages from Unity.
+   * This is sent by the UnityNativeModule.onMessage function.
    */
   private createListeners() {
     this.stringListeners = {};

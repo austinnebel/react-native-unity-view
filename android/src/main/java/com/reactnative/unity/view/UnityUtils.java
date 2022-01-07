@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.os.Build;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
@@ -13,10 +14,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
-/**
- * Created by xzper on 2018-03-08.
- */
 
+/**
+ * Holds a set of utilities for interacting directly with the Unity interface.
+ */
 public class UnityUtils {
     public interface CreateCallback {
         void onReady();
@@ -25,10 +26,14 @@ public class UnityUtils {
     private static UnityPlayer unityPlayer;
     private static boolean _isUnityReady;
     private static boolean _isUnityPaused;
+    private static final String TAG = "UnityUtils";
 
-    private static final CopyOnWriteArraySet<UnityEventListener> mUnityEventListeners =
-            new CopyOnWriteArraySet<>();
+    private static final CopyOnWriteArraySet<UnityEventListener> mUnityEventListeners = new CopyOnWriteArraySet<>();
 
+    /**
+     * Returns the current UnityPlayer.
+     * @return UnityPlayer
+     */
     public static UnityPlayer getPlayer() {
         if (!_isUnityReady) {
             return null;
@@ -36,14 +41,28 @@ public class UnityUtils {
         return unityPlayer;
     }
 
+    /**
+     * Returns true if Unity is initialized.
+     * @return bool
+     */
     public static boolean isUnityReady() {
         return _isUnityReady;
     }
 
+    /**
+     * Returns true if Unity is paused.
+     * @return bool
+     */
     public static boolean isUnityPaused() {
         return _isUnityPaused;
     }
 
+    /**
+     * Creates a UnityPlayer object in a UIThread, modifies window, and calls callback function.
+     * Immediately calls callback function if player is already created.
+     * @param activity The current application Activity.
+     * @param callback Function to call after the new UnityPlayer is initialized.
+     */
     public static void createPlayer(final Activity activity, final CreateCallback callback) {
         if (unityPlayer != null) {
             callback.onReady();
@@ -62,9 +81,9 @@ public class UnityUtils {
                 unityPlayer = new UnityPlayer(activity);
 
                 try {
-                    // wait a moument. fix unity cannot start when startup.
+                    // wait a moment. fix unity cannot start when startup.
                     Thread.sleep( 1000 );
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
 
                 // start unity
@@ -91,6 +110,9 @@ public class UnityUtils {
         UnityPlayer.UnitySendMessage(gameObject, methodName, message);
     }
 
+    /**
+     * Pauses the UnityPlayer.
+     */
     public static void pause() {
         if (unityPlayer != null) {
             unityPlayer.pause();
@@ -98,6 +120,9 @@ public class UnityUtils {
         }
     }
 
+    /**
+     * Resumes the UnityPlayer.
+     */
     public static void resume() {
         if (unityPlayer != null) {
             unityPlayer.resume();
@@ -113,18 +138,30 @@ public class UnityUtils {
             try {
                 listener.onMessage(message);
             } catch (Exception e) {
+                Log.e(TAG, "Error calling onMessage for event listeners. Error: " + e);
             }
         }
     }
 
+    /**
+     * Adds an event listener to this module.
+     * @param listener Listener to add.
+     */
     public static void addUnityEventListener(UnityEventListener listener) {
         mUnityEventListeners.add(listener);
     }
 
+    /**
+     * Removes an event listener from this module.
+     * @param listener Listener to remove.
+     */
     public static void removeUnityEventListener(UnityEventListener listener) {
         mUnityEventListeners.remove(listener);
     }
 
+    /**
+     * Removes UnityPlayer view from parent ViewGroup and restores activity layout.
+     */
     public static void addUnityViewToBackground() {
         if (unityPlayer == null) {
             return;
@@ -140,6 +177,10 @@ public class UnityUtils {
         activity.addContentView(unityPlayer, layoutParams);
     }
 
+    /**
+     * Removes UnityPlayer from current ViewGroup and assigns it to a new one.
+     * @param group ViewGroup to assign UnityPlayer to.
+     */
     public static void addUnityViewToGroup(ViewGroup group) {
         if (unityPlayer == null) {
             return;

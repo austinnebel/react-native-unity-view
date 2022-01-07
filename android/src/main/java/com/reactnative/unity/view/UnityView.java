@@ -7,9 +7,8 @@ import android.widget.FrameLayout;
 import com.unity3d.player.UnityPlayer;
 
 /**
- * Created by xzper on 2018-02-07.
+ * View object for displaying Unity activity. Is managed my UnityViewManager.
  */
-
 public class UnityView extends FrameLayout {
 
     private UnityPlayer view;
@@ -18,6 +17,11 @@ public class UnityView extends FrameLayout {
         super(context);
     }
 
+    /**
+     * Sets this view to the specified UnityPlayer object.
+     * A 'player' is considered a scene in Unity.
+     * @param player UnityPlayer to assign to this view.
+     */
     public void setUnityPlayer(UnityPlayer player) {
         this.view = player;
         UnityUtils.addUnityViewToGroup(this);
