@@ -1,7 +1,6 @@
 package com.reactnative.unity.view;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.util.Log;

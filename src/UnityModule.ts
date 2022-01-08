@@ -198,14 +198,16 @@ class UnityModuleImpl implements UnityModule {
     return this.hid;
   }
 
-  /** Returns True if Unity is ready to be initialized.
-   *  Calls native isReady method.
+  /**
+   * Returns True if Unity is ready to be initialized.
+   * Calls native isReady method.
    */
   public async isReady() {
     return UnityNativeModule.isReady();
   }
-  /** Creates a Unity player object.
-   *  Calls native createUnity method.
+  /**
+   * Creates a Unity player object.
+   * Calls native createUnity method.
    */
   public async createUnity() {
     return UnityNativeModule.createUnity();

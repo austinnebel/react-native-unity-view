@@ -27,6 +27,9 @@ public class UnityView extends FrameLayout {
         UnityUtils.addUnityViewToGroup(this);
     }
 
+    /**
+     * Called when the window containing the view gains or loses focus.
+     */
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
@@ -35,6 +38,9 @@ public class UnityView extends FrameLayout {
         }
     }
 
+    /**
+     * Called when the current configuration of the resources being used by the application have changed.
+     */
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -43,6 +49,9 @@ public class UnityView extends FrameLayout {
         }
     }
 
+    /**
+     * This is called when the view is detached from a window.
+     */
     @Override
     protected void onDetachedFromWindow() {
         // todo: fix more than one unity view, don't add to background.

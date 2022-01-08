@@ -45,7 +45,7 @@ public class UnityViewManager extends SimpleViewManager<UnityView> implements Li
      */
     @NonNull
     @Override
-    protected UnityView createViewInstance(ThemedReactContext reactContext) {
+    protected UnityView createViewInstance(@NonNull ThemedReactContext reactContext) {
         final UnityView view = new UnityView(reactContext);
         view.addOnAttachStateChangeListener(this);
         Log.d(TAG, "createViewInstance");

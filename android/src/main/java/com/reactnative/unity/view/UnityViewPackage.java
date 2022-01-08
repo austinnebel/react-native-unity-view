@@ -1,5 +1,7 @@
 package com.reactnative.unity.view;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
@@ -16,6 +18,7 @@ import java.util.List;
 
 public class UnityViewPackage implements ReactPackage {
 
+    @NonNull
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         List<ViewManager> viewManagers = new ArrayList<>();
@@ -23,6 +26,7 @@ public class UnityViewPackage implements ReactPackage {
         return viewManagers;
     }
 
+    @NonNull
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
