@@ -1,37 +1,28 @@
 import * as React from 'react';
+import * as PropTypes from 'prop-types';
+import {UnityModule} from './UnityModule';
+import {UnityMessage, UnityMessageImpl} from './UnityMessage';
 import {
   NativeModules,
   requireNativeComponent,
   ViewProps,
   View,
 } from 'react-native';
-import * as PropTypes from 'prop-types';
-const {ViewPropTypes} = require('react-native');
 import {
   UnityRequestHandler,
   UnityRequestHandlerImpl,
 } from './UnityRequestHandler';
-import {UnityModule} from './UnityModule';
-import {UnityMessageType, UnityMessage, UnityMessageImpl} from './UnityMessage';
-import {IUnityRequest} from './UnityRequest';
-import {Observable} from 'rxjs';
 
 const {UIManager} = NativeModules;
+const {ViewPropTypes} = require('react-native');
 
+/** Prop definitions for a UnityView instance. */
 export interface UnityViewProps extends ViewProps {
-  /**
-   * Receive plain text message from unity.
-   */
+  /** Receive plain text message from unity. */
   onMessage?: (message: string) => void;
-
-  /**
-   * Receive JSON message from unity.
-   */
+  /** Receive JSON message from unity. */
   onUnityMessage?: (message: UnityMessage) => void;
-
-  /**
-   * Receive JSON request from unity.
-   */
+  /** Receive JSON request from unity. */
   onUnityRequest?: (handler: UnityRequestHandler) => void;
 }
 
@@ -63,90 +54,13 @@ export default class UnityView extends React.Component<UnityViewProps> {
     });
   }
 
+  public componentDidMount() {
+    console.log('TS: Unity Mounted');
+  }
   public componentWillUnmount() {
+    console.log('TS: Unity Unmounted');
     UnityModule.removeMessageListener(this.m_registrationToken);
     UnityModule.clear();
-  }
-
-  /**
-   * [Deprecated] Use `UnityModule.pause` instead.
-   */
-  public pause() {
-    UnityModule.pause();
-  }
-
-  /**
-   * [Deprecated] Use `UnityModule.resume` instead.
-   */
-  public resume() {
-    UnityModule.resume();
-  }
-
-  /**
-   * [Deprecated] Use `UnityModule.postMessage` instead.
-   */
-  public postMessage(
-    message: string | UnityMessage,
-    gameObject?: string,
-    methodName?: string,
-  ): void {
-    UnityModule.postMessage(message, gameObject, methodName);
-  }
-
-  /**
-   * [Deprecated] Use `UnityModule.postMessageAsync` instead.
-   */
-  public postMessageAsync<
-    TResponse = any,
-    TType extends number = UnityMessageType,
-    TData = any,
-  >(
-    request: IUnityRequest<TType, TData, TResponse>,
-    gameObject?: string,
-    methodName?: string,
-  ): Observable<TResponse>;
-
-  public postMessageAsync<
-    TResponse = any,
-    TType extends number = UnityMessageType,
-    TData = any,
-  >(
-    id: string,
-    data: any,
-    gameObject?: string,
-    methodName?: string,
-  ): Observable<TResponse>;
-
-  public postMessageAsync<
-    TResponse = any,
-    TType extends number = UnityMessageType,
-    TData = any,
-  >(
-    id: string,
-    type: TType,
-    data: any,
-    gameObject?: string,
-    methodName?: string,
-  ): Observable<TResponse>;
-
-  public postMessageAsync<
-    TResponse = any,
-    TType extends number = UnityMessageType,
-    TData = any,
-  >(
-    first: string | IUnityRequest<TType, TData, TResponse>,
-    second: any,
-    third: any,
-    fourth?: string,
-    fifth?: string,
-  ): Observable<TResponse> {
-    return UnityModule.postMessageAsync(
-      first as any,
-      second,
-      third,
-      fourth,
-      fifth,
-    );
   }
 
   public render() {
