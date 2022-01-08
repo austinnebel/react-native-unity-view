@@ -72,11 +72,6 @@ public class UnityUtils {
             @Override
             public void run() {
                 activity.getWindow().setFormat(PixelFormat.RGBA_8888);
-                int flag = activity.getWindow().getAttributes().flags;
-                boolean fullScreen = false;
-                if((flag & WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN) {
-                    fullScreen = true;
-                }
 
                 unityPlayer = new UnityPlayer(activity);
 
@@ -92,11 +87,6 @@ public class UnityUtils {
                 unityPlayer.requestFocus();
                 unityPlayer.resume();
 
-                // restore window layout
-                if (!fullScreen) {
-                    activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-                    activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                }
                 _isUnityReady = true;
                 callback.onReady();
             }
